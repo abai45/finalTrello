@@ -79,14 +79,15 @@ public class HomeController {
         if(folders!=null) {
             if(folders.getCategories()!=null) {
                 categories = folders.getCategories();
-
             } else {
                 categories = new ArrayList<>();
             }
             Categories categories1 = categoryRep.findById(catId).orElseThrow();
-            categories.add(categories1);
-            folders.setCategories(categories);
-            folderRep.save(folders);
+            if (!folders.getCategories().contains(categories1)) {
+                categories.add(categories1);
+                folders.setCategories(categories);
+                folderRep.save(folders);
+            }
         }
         return "redirect:/details/" + folderId;
     }
@@ -129,16 +130,18 @@ public class HomeController {
         commentRep.save(comments);
         return "redirect:/detailsTask/"+id;
     }
-    @PostMapping(value = "/updateTask")
+    @GetMapping(value = "/updateTask")
     public String updateTask(@RequestParam(name="id") Long id,
                              @RequestParam(name = "name") String name,
                              @RequestParam(name = "desc") String desc,
-                             @RequestParam(name = "status")Tasks.TaskStatus status) {
+                            @RequestParam(name = "status") String status){
         Tasks tasks = taskRep.findById(id).orElseThrow();
         tasks.setTitle(name);
         tasks.setDescription(desc);
-        tasks.setStatus(status);
+        tasks.setStatus(Tasks.TaskStatus.valueOf(status));
         taskRep.save(tasks);
+
+
         return "redirect:/detailsTask/"+id;
     }
     @PostMapping(value = "/deleteTask")

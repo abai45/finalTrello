@@ -19,11 +19,11 @@ public class Tasks extends BaseModel{
     private String title;
 
     @Column(columnDefinition = "text")
-    private String description; // TEXT
+    private String description;
 
     public enum TaskStatus {
         toDo(0), inTest(1), done(2), failed(3);
-        private final int value;
+        private int value;
         TaskStatus(int value) {
             this.value = value;
         }
